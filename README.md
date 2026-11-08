@@ -100,6 +100,12 @@ python app.py
 
 Open the local URL displayed in your terminal (typically `http://127.0.0.1:5000/`).
 
+<img width="1880" height="902" alt="Screenshot 2026-11-08 115604" src="https://github.com/user-attachments/assets/36bba87a-c2f3-4767-a121-d77e5d8803c4" />
+
+<img width="1877" height="911" alt="Screenshot 2026-11-08 115623" src="https://github.com/user-attachments/assets/f36f8c54-2972-48af-a0ae-d7f7fc0e6cdf" />
+
+
+
 ## Learning Outcomes
 
 - Understanding file backup and recovery workflows.
