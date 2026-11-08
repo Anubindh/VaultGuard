@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VaultGuard | Data Protection</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">V</div>
+            <div>
+                <h2>VaultGuard</h2>
+                <span>DATA PROTECTION</span>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav>
+            <a href="/" class="nav-item active">
+                <span>▦</span> Overview
+            </a>
+
+            <a href="#backup" class="nav-item">
+                <span>⇧</span> File Backup
+            </a>
+
+            <a href="#history" class="nav-item">
+                <span>◷</span> Backup History
+            </a>
+
+            <a href="/recovery" class="nav-item">
+                <span>↻</span> Recovery Center
+            </a>
+
+            <a href="/activity" class="nav-item">
+                <span>▤</span> Activity Logs
+            </a>
+
+            <a href="/health" class="nav-item">
+    <span>♡</span> Backup Health
+</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="security-card">
+                <div class="security-icon">✦</div>
+                <h3>Your data matters.</h3>
+                <p>Keep your important files protected with VaultGuard.</p>
+            </div>
+
+            <div class="system-status">
+                <span class="status-dot"></span>
+                System Operational
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <p class="breadcrumb">Workspace / Overview</p>
+                <h1>Overview</h1>
+            </div>
+
+            <div class="profile">
+                <div class="profile-icon">VG</div>
+                <div>
+                    <strong>Administrator</strong>
+                    <span>Local Workspace</span>
+                </div>
+            </div>
+        </header>
+
+
+        <section class="welcome-section">
+            <div>
+                <span class="eyebrow">DATA PROTECTION CENTER</span>
+                <h2>Your files. Your control.</h2>
+                <p>Monitor, protect and manage your file backups from one place.</p>
+            </div>
+
+            <a href="#backup" class="primary-button">
+                + Create Backup
+            </a>
+        </section>
+
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <div class="flash-message">
+                    <span>✓</span> {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Total Backups</span>
+                    <span class="stat-icon blue">▤</span>
+                </div>
+                <h2>{{ total_backups }}</h2>
+                <p>Files backed up</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Storage Used</span>
+                    <span class="stat-icon purple">◫</span>
+                </div>
+                <h2 id="storageValue">{{ total_size }}</h2>
+                <p>Combined backup size</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Integrity System</span>
+                    <span class="stat-icon green">✓</span>
+                </div>
+                <h2>SHA-256</h2>
+                <p>Checksum generation enabled</p>
+            </div>
+
+        </section>
+
+
+        <section class="content-grid">
+
+            <div class="panel upload-panel" id="backup">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">PROTECT YOUR DATA</span>
+                        <h2>Create New Backup</h2>
+                    </div>
+                    <span class="heading-icon">⇧</span>
+                </div>
+
+                <form action="{{ url_for('upload') }}"
+                      method="POST"
+                      enctype="multipart/form-data">
+
+                    <label for="fileInput" class="upload-area">
+                        <div class="upload-icon">↑</div>
+                        <h3>Upload your file</h3>
+                        <p>Choose a file from your device to create a secure backup.</p>
+                        <span class="browse-text">Browse Files</span>
+                        <span class="file-name" id="fileName">No file selected</span>
+                    </label>
+
+                    <input type="file"
+                           name="file"
+                           id="fileInput"
+                           required>
+
+                    <button type="submit" class="submit-button">
+                        Secure My Backup →
+                    </button>
+
+                </form>
+
+                <div class="upload-note">
+                    <span>◆</span>
+                    SHA-256 integrity checksum generated automatically.
+                </div>
+
+            </div>
+
+
+            <div class="panel storage-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">STORAGE OVERVIEW</span>
+                        <h2>Backup Activity</h2>
+                    </div>
+                </div>
+
+                <div class="storage-visual">
+                    <div class="storage-circle">
+                        <div>
+                            <strong>{{ total_backups }}</strong>
+                            <span>BACKUPS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="storage-legend">
+                    <div>
+                        <span class="legend-dot blue-dot"></span>
+                        <span>Stored files</span>
+                        <strong>{{ total_backups }}</strong>
+                    </div>
+
+                    <div>
+                        <span class="legend-dot green-dot"></span>
+                        <span>Integrity checks enabled</span>
+                        <strong>SHA-256</strong>
+                    </div>
+                </div>
+
+                <p class="storage-description">
+                    Every uploaded file receives a unique backup identifier
+                    and an integrity checksum.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="panel history-panel" id="history">
+
+            <div class="panel-heading history-heading">
+                <div>
+                    <span class="eyebrow">YOUR DATA ARCHIVE</span>
+                    <h2>Recent Backups</h2>
+                </div>
+
+                <span class="record-count">
+                    {{ total_backups }} RECORDS
+                </span>
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>FILE NAME</th>
+                            <th>FILE SIZE</th>
+                            <th>CHECKSUM</th>
+                            <th>BACKUP DATE</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for backup in backups %}
+
+                        <tr>
+                            <td>
+                                <strong>{{ backup.file_name }}</strong>
+                            </td>
+
+                            <td>
+                                {{ "%.2f"|format(backup.file_size / 1024) }} KB
+                            </td>
+
+                            <td>
+                                <span class="checksum-text">
+                                    {{ backup.checksum[:12] }}...
+                                </span>
+                            </td>
+
+                            <td>{{ backup.backup_time }}</td>
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                <div class="empty-icon">▤</div>
+                                <strong>No backups available</strong>
+                                <p>Upload your first file to get started.</p>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="history-footer">
+                <a href="/recovery" class="text-link">
+                    Open Recovery Center →
+                </a>
+            </div>
+
+        </section>
+
+
+        <footer>
+            <span>VaultGuard © 2026</span>
+            <span>Intelligent Backup & Recovery System</span>
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script>
+    const fileInput = document.getElementById("fileInput");
+    const fileName = document.getElementById("fileName");
+
+    fileInput.addEventListener("change", function () {
+        if (this.files.length > 0) {
+            fileName.textContent = this.files[0].name;
+        } else {
+            fileName.textContent = "No file selected";
+        }
+    });
+
+    const storageValue = document.getElementById("storageValue");
+    const bytes = Number(storageValue.textContent);
+
+    function formatStorage(size) {
+        if (size < 1024) return size + " B";
+        if (size < 1024 * 1024) return (size / 1024).toFixed(2) + " KB";
+        if (size < 1024 * 1024 * 1024)
+            return (size / (1024 * 1024)).toFixed(2) + " MB";
+
+        return (size / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+    }
+
+    storageValue.textContent = formatStorage(bytes);
+</script>
+
+</body>
+</html>

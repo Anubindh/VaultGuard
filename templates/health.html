@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VaultGuard | Backup Health</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">V</div>
+            <div>
+                <h2>VaultGuard</h2>
+                <span>DATA PROTECTION</span>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav>
+            <a href="/" class="nav-item">
+                <span>▦</span> Overview
+            </a>
+
+            <a href="/#backup" class="nav-item">
+                <span>⇧</span> File Backup
+            </a>
+
+            <a href="/recovery" class="nav-item">
+                <span>◷</span> Recovery Center
+            </a>
+
+            <a href="/health" class="nav-item active">
+                <span>♡</span> Backup Health
+            </a>
+
+            <a href="/activity" class="nav-item">
+                <span>▤</span> Activity Logs
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="security-card">
+                <div class="security-icon">✦</div>
+                <h3>Backup Health</h3>
+                <p>Monitor the integrity and availability of your stored files.</p>
+            </div>
+
+            <div class="system-status">
+                <span class="status-dot"></span>
+                Monitoring Active
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <p class="breadcrumb">Workspace / Monitoring</p>
+                <h1>Backup Health</h1>
+            </div>
+
+            <a href="/" class="primary-button">← Dashboard</a>
+        </header>
+
+
+        <section class="welcome-section">
+
+            <div>
+                <span class="eyebrow">BACKUP HEALTH MONITORING</span>
+                <h2>Know the condition of your data.</h2>
+                <p>
+                    Check stored backup availability and detect
+                    integrity issues using SHA-256.
+                </p>
+            </div>
+
+            <a href="/health" class="primary-button">
+                ↻ Run Health Check
+            </a>
+
+        </section>
+
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Total Backups</span>
+                    <span class="stat-icon blue">▤</span>
+                </div>
+
+                <h2>{{ total }}</h2>
+                <p>Registered backup copies</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Healthy</span>
+                    <span class="stat-icon green">✓</span>
+                </div>
+
+                <h2>{{ healthy }}</h2>
+                <p>Integrity verified</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Corrupted</span>
+                    <span class="stat-icon purple">!</span>
+                </div>
+
+                <h2>{{ corrupted }}</h2>
+                <p>Checksum mismatches</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Missing</span>
+                    <span class="stat-icon blue">?</span>
+                </div>
+
+                <h2>{{ missing }}</h2>
+                <p>Unavailable backup files</p>
+            </div>
+
+        </section>
+
+
+        <section class="panel history-panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <span class="eyebrow">BACKUP DIAGNOSTICS</span>
+                    <h2>Backup Health Report</h2>
+                </div>
+
+                <span class="record-count">
+                    {{ total }} RECORDS
+                </span>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>FILE NAME</th>
+                            <th>FILE SIZE</th>
+                            <th>BACKUP DATE</th>
+                            <th>HEALTH STATUS</th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for record in health_records %}
+
+                        <tr>
+
+                            <td>
+                                <strong>{{ record.file_name }}</strong>
+                            </td>
+
+                            <td>
+                                {{ "%.2f"|format(record.file_size / 1024) }} KB
+                            </td>
+
+                            <td>{{ record.backup_time }}</td>
+
+                            <td>
+
+                                {% if record.status == "Healthy" %}
+
+                                    <span class="status-badge health-healthy">
+                                        ✓ Healthy
+                                    </span>
+
+                                {% elif record.status == "Corrupted" %}
+
+                                    <span class="status-badge health-corrupted">
+                                        ⚠ Corrupted
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status-badge health-missing">
+                                        ✕ Missing
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                <div class="empty-icon">♡</div>
+                                <strong>No backup records found</strong>
+                                <p>Upload a file to start monitoring its health.</p>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <footer>
+            <span>VaultGuard © 2026</span>
+            <span>Backup Integrity & Health Monitoring</span>
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

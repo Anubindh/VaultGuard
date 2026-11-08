@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VaultGuard | Activity Monitoring</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">V</div>
+            <div>
+                <h2>VaultGuard</h2>
+                <span>DATA PROTECTION</span>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav>
+            <a href="/" class="nav-item">
+                <span>▦</span> Overview
+            </a>
+
+            <a href="/#backup" class="nav-item">
+                <span>⇧</span> File Backup
+            </a>
+
+            <a href="/recovery" class="nav-item">
+                <span>◷</span> Recovery Center
+            </a>
+
+            <a href="/activity" class="nav-item active">
+                <span>▤</span> Activity Logs
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="security-card">
+                <div class="security-icon">✦</div>
+                <h3>System Monitoring</h3>
+                <p>Monitor backup operations and recovery activities.</p>
+            </div>
+
+            <div class="system-status">
+                <span class="status-dot"></span>
+                System Operational
+            </div>
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <p class="breadcrumb">Workspace / Monitoring</p>
+                <h1>Activity Monitoring</h1>
+            </div>
+
+            <a href="/" class="primary-button">← Dashboard</a>
+        </header>
+
+
+        <section class="welcome-section">
+            <div>
+                <span class="eyebrow">SYSTEM AUDIT CENTER</span>
+                <h2>Every action matters.</h2>
+                <p>Review backup, verification and recovery operations.</p>
+            </div>
+        </section>
+
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Total Activities</span>
+                    <span class="stat-icon blue">▤</span>
+                </div>
+
+                <h2>{{ total_activities }}</h2>
+                <p>Recorded operations</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Successful</span>
+                    <span class="stat-icon green">✓</span>
+                </div>
+
+                <h2>{{ successful }}</h2>
+                <p>Completed operations</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Failed / Blocked</span>
+                    <span class="stat-icon purple">!</span>
+                </div>
+
+                <h2>{{ failed }}</h2>
+                <p>Operations requiring attention</p>
+            </div>
+
+        </section>
+
+
+        <section class="panel history-panel">
+
+            <div class="panel-heading">
+                <div>
+                    <span class="eyebrow">OPERATION RECORDS</span>
+                    <h2>Recent System Activities</h2>
+                </div>
+
+                <span class="record-count">
+                    {{ total_activities }} EVENTS
+                </span>
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ACTION</th>
+                            <th>FILE NAME</th>
+                            <th>STATUS</th>
+                            <th>DETAILS</th>
+                            <th>DATE & TIME</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for log in logs %}
+
+                        <tr>
+                            <td>
+                                <strong>{{ log.action }}</strong>
+                            </td>
+
+                            <td>{{ log.file_name }}</td>
+
+                            <td>
+                                <span class="status-badge
+                                    {% if log.status != 'Success' %}failed-status{% endif %}">
+                                    {{ log.status }}
+                                </span>
+                            </td>
+
+                            <td>{{ log.details }}</td>
+
+                            <td>{{ log.activity_time }}</td>
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <div class="empty-icon">▤</div>
+                                <strong>No activities recorded</strong>
+                                <p>Your system activities will appear here.</p>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <footer>
+            <span>VaultGuard © 2026</span>
+            <span>System Activity & Audit Monitoring</span>
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

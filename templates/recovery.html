@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VaultGuard | Recovery Center</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">V</div>
+            <div>
+                <h2>VaultGuard</h2>
+                <span>DATA PROTECTION</span>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav>
+            <a href="/" class="nav-item">
+                <span>▦</span> Overview
+            </a>
+
+            <a href="/#backup" class="nav-item">
+                <span>⇧</span> File Backup
+            </a>
+
+            <a href="/recovery" class="nav-item active">
+                <span>◷</span> Recovery Center
+            </a>
+
+            <a href="/activity" class="nav-item">
+                <span>▤</span> Activity Logs
+            </a>
+
+            <a href="/health" class="nav-item">
+    <span>♡</span> Backup Health
+</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="security-card">
+                <div class="security-icon">✦</div>
+                <h3>Recovery protection</h3>
+                <p>Verify backup integrity before downloading your files.</p>
+            </div>
+
+            <div class="system-status">
+                <span class="status-dot"></span>
+                System Operational
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <p class="breadcrumb">Workspace / Recovery</p>
+                <h1>Recovery Center</h1>
+            </div>
+
+            <a href="/" class="primary-button">
+                ← Dashboard
+            </a>
+
+        </header>
+
+
+        <section class="welcome-section">
+
+            <div>
+                <span class="eyebrow">BACKUP MANAGEMENT</span>
+                <h2>Restore with confidence.</h2>
+                <p>
+                    View backup versions, verify file integrity
+                    and recover your stored files.
+                </p>
+            </div>
+
+        </section>
+
+
+       {% with messages = get_flashed_messages() %}
+    {% for message in messages %}
+
+        {% set is_warning = "WARNING:" in message or "blocked" in message|lower or "failed" in message|lower or "missing" in message|lower %}
+
+        <div class="flash-message {% if is_warning %}flash-error{% else %}flash-success{% endif %}">
+            <span>{% if is_warning %}⚠{% else %}✓{% endif %}</span>
+            {{ message }}
+        </div>
+
+    {% endfor %}
+{% endwith %}
+
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Available Backups</span>
+                    <span class="stat-icon blue">▤</span>
+                </div>
+
+                <h2>{{ backups|length }}</h2>
+                <p>Stored backup copies</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Integrity Protection</span>
+                    <span class="stat-icon green">✓</span>
+                </div>
+
+                <h2>SHA-256</h2>
+                <p>Verification available</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Recovery Mode</span>
+                    <span class="stat-icon purple">↻</span>
+                </div>
+
+                <h2>Verified</h2>
+                <p>Downloads require integrity checks</p>
+            </div>
+
+        </section>
+
+
+        <section class="panel history-panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <span class="eyebrow">BACKUP ARCHIVE</span>
+                    <h2>Available Recovery Points</h2>
+                </div>
+
+                <span class="record-count">
+                    {{ backups|length }} RECORDS
+                </span>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>FILE NAME</th>
+                            <th>VERSION</th>
+                            <th>FILE SIZE</th>
+                            <th>CHECKSUM</th>
+                            <th>BACKUP DATE</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for backup in backups %}
+
+                        <tr>
+
+                            <td>
+                                <strong>{{ backup.file_name }}</strong>
+                            </td>
+
+                            <td>
+                                <span class="record-count">
+                                    V{{ versions[backup.id] }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ "%.2f"|format(backup.file_size / 1024) }} KB
+                            </td>
+
+                            <td>
+                                <span class="checksum-text">
+                                    {{ backup.checksum[:12] }}...
+                                </span>
+                            </td>
+
+                            <td>{{ backup.backup_time }}</td>
+
+                            <td>
+                                <div class="action-buttons">
+
+                                    <a href="{{ url_for('verify', backup_id=backup.id) }}"
+                                       class="secondary-button">
+                                        Verify
+                                    </a>
+
+                                    <a href="{{ url_for('restore', backup_id=backup.id) }}"
+                                       class="primary-button">
+                                        Restore
+                                    </a>
+
+                                </div>
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                <div class="empty-icon">◷</div>
+                                <strong>No recovery points available</strong>
+                                <p>Create a backup first to see it here.</p>
+                                <a href="/" class="text-link">
+                                    Create a backup →
+                                </a>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <span class="eyebrow">RECOVERY WORKFLOW</span>
+                    <h2>How Recovery Works</h2>
+                </div>
+            </div>
+
+            <div class="storage-legend">
+
+                <div>
+                    <span class="legend-dot blue-dot"></span>
+                    <span>1. Select a backup version</span>
+                </div>
+
+                <div>
+                    <span class="legend-dot green-dot"></span>
+                    <span>2. Verify its SHA-256 checksum</span>
+                </div>
+
+                <div>
+                    <span class="legend-dot purple-dot"></span>
+                    <span>3. Download the verified file</span>
+                </div>
+
+            </div>
+
+            <p class="storage-description">
+                VaultGuard blocks recovery downloads when the stored
+                backup does not match its original checksum.
+            </p>
+
+        </section>
+
+
+        <footer>
+            <span>VaultGuard © 2026</span>
+            <span>Secure Backup & Recovery Management</span>
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>
